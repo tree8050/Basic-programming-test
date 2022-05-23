@@ -32,14 +32,22 @@ public class UserDao {
 	}
 	
 	public void create() {
+		Connection conn = null;
+		Statement stmt = null;
+		ResultSet rs = null;
 		try {
-			String id = UUID.randomUUID().toString();
+			final String url = "jdbc:oracle:thin:@192.168.0.12:1521:orcl11";
+			final String id = "test";
+			final String pw = "test";
+			conn = DriverManager.getConnection(url, id, pw);
+			
+			String create_Id = UUID.randomUUID().toString();
 			System.out.println("이름을 입력해주세요(1~5글자)");
 			String name = sc.nextLine();
 			
 			String sql2 = " insert into MEMBER values(?, ?)";
 			pstmt = conn.prepareStatement(sql2);
-			pstmt.setString(1, id);
+			pstmt.setString(1, create_Id);
 			pstmt.setString(2, name);
 			
 			int cnt =pstmt.executeUpdate();
@@ -166,13 +174,20 @@ public class UserDao {
 		}
 	}
 	public void update() {
-		
+		Connection conn = null;
+		ResultSet rs = null;
+		PreparedStatement pstmt = null;
 		try {
+			final String url = "jdbc:oracle:thin:@192.168.0.12:1521:orcl11";
+			final String id = "test";
+			final String pw = "test";
+			conn = DriverManager.getConnection(url, id, pw);
+			
 			System.out.println("수정할  id를 입력해주세요");
-			String id = sc.nextLine();
+			String update_Id = sc.nextLine();
 			
 
-			int count = getMemberCount(id);
+			int count = getMemberCount(update_Id);
 			if(count==0){
 				System.out.println("존재하지않는 id 입니다.");
 				return ;
@@ -184,7 +199,7 @@ public class UserDao {
 			String sql4 = "UPDATE MEMBER SET name = ? where id = ?";
 			pstmt = conn.prepareStatement(sql4);
 			pstmt.setString(1, name);
-			pstmt.setString(2, id);
+			pstmt.setString(2, update_Id);
 			int cnt =pstmt.executeUpdate();
 			
 			if(cnt>0){
@@ -263,10 +278,23 @@ public class UserDao {
 	
 
 	public void delete() {
+		Connection conn = null;
+		PreparedStatement pstmt = null;
+		ResultSet rs = null;
 		try {
+			final String url = "jdbc:oracle:thin:@192.168.0.12:1521:orcl11";
+			final String id = "test";
+			final String pw = "test";
+			conn = DriverManager.getConnection(url, id, pw);
 			
 			System.out.println("삭제할 id를 입력하세요");
 			String delete_id = sc.nextLine();
+			
+			int count = getMemberCount(delete_id);
+			if(count==0){
+				System.out.println("존재하지않는 id 입니다.");
+				return ;
+			}
 			
 			String sql3 = "delete from MEMBER where id = ?";
 			
