@@ -32,11 +32,11 @@ properties → Deployment Assembly
 
 test 프로젝트에 톰캣을 추가한 후 설정한 배포 경로입니다.
 
-![Tomcat 배포 경로 2](https://user-images.githubusercontent.com/87375644/169853911-0cc98820-7a09-4167-bc5a-9c7efddd7c84.png)
+![Tomcat 비교](https://user-images.githubusercontent.com/87375644/169853914-e0e5b48f-2218-4676-a6f3-31088d44f791.png)
 
 톰캣을 추가한 test 프로젝트는 톰캣설치경로\webapps\test 경로에 프로젝트가 생성되어있습니다.
 test2 프로젝트는 톰캣을 추가하지않았기에 생성되어있지 않습니다.
 
-![Tomcat 비교](https://user-images.githubusercontent.com/87375644/169853914-e0e5b48f-2218-4676-a6f3-31088d44f791.png)
+![Tomcat 배포 경로 2](https://user-images.githubusercontent.com/87375644/169853911-0cc98820-7a09-4167-bc5a-9c7efddd7c84.png)
 
 지정한 경로에 클래스파일이 배포된 모습입니다.
