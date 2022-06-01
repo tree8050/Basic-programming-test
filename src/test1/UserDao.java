@@ -6,6 +6,7 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.util.ArrayList;
 import java.util.Scanner;
 import java.util.UUID;
 
@@ -15,7 +16,7 @@ public class UserDao {
 	ResultSet rs = null;
 	PreparedStatement pstmt = null;
 	Statement stmt = null;
-	
+	UserDto userDto = new UserDto();
 	public UserDao() {
 		final String url = "jdbc:oracle:thin:@192.168.0.12:1521:orcl11";
 		final String id = "test";
@@ -31,33 +32,25 @@ public class UserDao {
 		}
 	}
 	
-	public void create() {
+	public int create(String name) {
 		Connection conn = null;
 		Statement stmt = null;
 		ResultSet rs = null;
+		int cnt = 0;
 		try {
 			final String url = "jdbc:oracle:thin:@192.168.0.12:1521:orcl11";
 			final String id = "test";
 			final String pw = "test";
 			conn = DriverManager.getConnection(url, id, pw);
-			
-			String create_Id = UUID.randomUUID().toString();
-			System.out.println("이름을 입력해주세요(1~5글자)");
-			String name = sc.nextLine();
-			
+			userDto.setId(UUID.randomUUID().toString());
+			userDto.setName(name);
 			String sql2 = " insert into MEMBER values(?, ?)";
 			pstmt = conn.prepareStatement(sql2);
-			pstmt.setString(1, create_Id);
-			pstmt.setString(2, name);
+			pstmt.setString(1, userDto.getId());
+			pstmt.setString(2, userDto.getName());
 			
-			int cnt =pstmt.executeUpdate();
+			cnt =pstmt.executeUpdate();
 			
-//			System.out.println("반환값: "+ cnt);
-			if(cnt>0){
-				System.out.println("추가 성공");
-			}else{
-				System.out.println("추가 실패");
-			}
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}finally{
@@ -78,15 +71,16 @@ public class UserDao {
 				// TODO: handle exception
 			}
 		}
+		return cnt;
 	}
 
-	public void allRead() {
+	public ArrayList<UserDto> allRead() {
 		Connection conn = null;
 		Statement stmt = null;
 		ResultSet rs = null;
-
-		System.out.println("                 id                     name");
-		System.out.println("--------------------------------------------");
+		
+		ArrayList<UserDto> list = new ArrayList<UserDto>();
+		
 		try {
 			final String url = "jdbc:oracle:thin:@192.168.0.12:1521:orcl11";
 			final String id = "test";
@@ -99,14 +93,22 @@ public class UserDao {
 			rs= stmt.executeQuery(sql);
 
 			while(rs.next()){
-				System.out.print(rs.getString("id") + " \t");
-				System.out.print(rs.getString("name")+ " \n");
+				UserDto userDto = new UserDto();
+				userDto.setId(rs.getString("id"));
+				userDto.setName(rs.getString("name"));
+				
+				list.add(userDto);
 			}
 			
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}finally{
 			//자원 반납
+			if(conn!=null) try {
+				conn.close();
+			} catch (SQLException e) {
+				// TODO: handle exception
+			}
 			if(rs!=null) try {
 				rs.close();
 			} catch (SQLException e) {
@@ -123,39 +125,48 @@ public class UserDao {
 				// TODO: handle exception
 			}
 		}
-
+		return list;
 	}
-	public void read() {
+	
+	public UserDto read(String userId) {
 		Connection conn = null;
 		ResultSet rs = null;
 		PreparedStatement pstmt = null;
+		
+		UserDto userDto = null;
+		
 		try {
 			final String url = "jdbc:oracle:thin:@192.168.0.12:1521:orcl11";
 			final String id = "test";
 			final String pw = "test";
 			conn = DriverManager.getConnection(url, id, pw);
-			System.out.println("검색할  id를 입력해주세요");
-			String keyid = sc.nextLine();
 
-			int count = getMemberCount(keyid);
+			int count = getMemberCount(userId);
 			if(count==0){
 				System.out.println("존재하지않는 id 입니다.");
-				return ;
+				return userDto;
 			}
 			String sql5 = "SELECT * FROM MEMBER WHERE id = ?";
 			pstmt = conn.prepareStatement(sql5);
-			pstmt.setString(1, keyid);
+			pstmt.setString(1, userId);
 			rs= pstmt.executeQuery();
-			System.out.println("                 id                     name");
-			System.out.println("--------------------------------------------");
+
 			while(rs.next()){
-				System.out.print(rs.getString("id") + " \t");
-				System.out.print(rs.getString("name")+ " \n");
+				
+				userDto = new UserDto();
+				
+				userDto.setId(rs.getString("id"));
+				userDto.setName(rs.getString("name"));
 			}
 		} catch (SQLException e) {
 			// TODO: handle exception
 		}finally{
 			//자원 반납
+			if(conn!=null) try {
+				conn.close();
+			} catch (SQLException e) {
+				// TODO: handle exception
+			}
 			if(rs!=null) try {
 				rs.close();
 			} catch (SQLException e) {
@@ -172,47 +183,45 @@ public class UserDao {
 				// TODO: handle exception
 			}
 		}
+		return userDto;
 	}
-	public void update() {
+	public int update(UserDto userDto) {
 		Connection conn = null;
 		ResultSet rs = null;
 		PreparedStatement pstmt = null;
+		int cnt = 0;
+		
 		try {
 			final String url = "jdbc:oracle:thin:@192.168.0.12:1521:orcl11";
 			final String id = "test";
 			final String pw = "test";
 			conn = DriverManager.getConnection(url, id, pw);
-			
-			System.out.println("수정할  id를 입력해주세요");
-			String update_Id = sc.nextLine();
-			
 
-			int count = getMemberCount(update_Id);
+			int count = getMemberCount(userDto.getId());
 			if(count==0){
 				System.out.println("존재하지않는 id 입니다.");
-				return ;
+				return count;
 			}
 			
 			System.out.println("수정할 이름을 입력해주세요(1~5글자)");
+//			userDto.setName(sc.nextLine());
 			String name = sc.nextLine();
 			
 			String sql4 = "UPDATE MEMBER SET name = ? where id = ?";
 			pstmt = conn.prepareStatement(sql4);
 			pstmt.setString(1, name);
-			pstmt.setString(2, update_Id);
-			int cnt =pstmt.executeUpdate();
-			
-			if(cnt>0){
-				System.out.println("수정 성공");
-			}else{
-				System.out.println("수정 실패");
-			}
-			
-			
+			pstmt.setString(2, userDto.getId());
+			cnt =pstmt.executeUpdate();
+		
 		} catch (SQLException e) {
 			// TODO: handle exception
 		}finally{
 			//자원 반납
+			if(conn!=null) try {
+				conn.close();
+			} catch (SQLException e) {
+				// TODO: handle exception
+			}
 			if(rs!=null) try {
 				rs.close();
 			} catch (SQLException e) {
@@ -229,6 +238,7 @@ public class UserDao {
 				// TODO: handle exception
 			}
 		}
+		return cnt;
 	}
 	
 	// id 개수를 반환
@@ -257,6 +267,11 @@ public class UserDao {
 			e.printStackTrace();
 		}finally{
 			//자원 반납
+			if(conn!=null) try {
+				conn.close();
+			} catch (SQLException e) {
+				// TODO: handle exception
+			}
 			if(rs!=null) try {
 				rs.close();
 			} catch (SQLException e) {
@@ -277,41 +292,36 @@ public class UserDao {
 	}
 	
 
-	public void delete() {
+	public int delete(String did) {
 		Connection conn = null;
 		PreparedStatement pstmt = null;
 		ResultSet rs = null;
+		int cnt = 0;
 		try {
 			final String url = "jdbc:oracle:thin:@192.168.0.12:1521:orcl11";
 			final String id = "test";
 			final String pw = "test";
 			conn = DriverManager.getConnection(url, id, pw);
-			
-			System.out.println("삭제할 id를 입력하세요");
-			String delete_id = sc.nextLine();
-			
-			int count = getMemberCount(delete_id);
+			int count = getMemberCount(did);
 			if(count==0){
 				System.out.println("존재하지않는 id 입니다.");
-				return ;
+				return count;
 			}
 			
 			String sql3 = "delete from MEMBER where id = ?";
 			
 			pstmt = conn.prepareStatement(sql3);
-			pstmt.setString(1, delete_id);
-			int cnt = pstmt.executeUpdate();
-
-			if(cnt>0){
-				System.out.println("삭제 성공");
-			}else{
-				System.out.println("삭제 실패");
-			}
-			
+			pstmt.setString(1, did);
+			cnt = pstmt.executeUpdate();
 		} catch (SQLException e) {
 			// TODO: handle exception
 		}finally{
 			//자원 반납
+			if(conn!=null) try {
+				conn.close();
+			} catch (SQLException e) {
+				// TODO: handle exception
+			}
 			if(rs!=null) try {
 				rs.close();
 			} catch (SQLException e) {
@@ -328,5 +338,80 @@ public class UserDao {
 				// TODO: handle exception
 			}
 		}
+		return cnt;
 	}
+
+	// 성공
+	public void methodA() throws Exception{
+		Connection conn = null;
+		Statement stmt = null;
+		ResultSet rs = null;
+		final String url = "jdbc:oracle:thin:@192.168.0.12:1521:orcl11";
+		final String id = "test";
+		final String pw = "test";
+		conn = DriverManager.getConnection(url, id, pw);
+		conn.setAutoCommit(false);
+		String cid = UUID.randomUUID().toString();
+		String name = "강호동";
+		String sql = " insert into MEMBER values(?, ?)";
+		pstmt = conn.prepareStatement(sql);
+		pstmt.setString(1, cid);
+		pstmt.setString(2, name);
+		int cnt =pstmt.executeUpdate();
+	}
+
+	// 실패
+	public void methodB() throws Exception {
+		Connection conn = null;
+		Statement stmt = null;
+		ResultSet rs = null;
+		final String url = "jdbc:oracle:thin:@192.168.0.12:1521:orcl11";
+		final String id = "test";
+		final String pw = "test";
+		conn = DriverManager.getConnection(url, id, pw);
+		conn.setAutoCommit(false);
+		String cid = UUID.randomUUID().toString();
+		String name = "강호동유재석";
+		String sql = " insert into MEMBER values(?, ?)";
+		pstmt = conn.prepareStatement(sql);
+		pstmt.setString(1, cid);
+		pstmt.setString(2, name);
+		int cnt =pstmt.executeUpdate();
+	}
+	// 성공
+	public void methodC() throws Exception{
+		Connection conn = null;
+		Statement stmt = null;
+		ResultSet rs = null;
+		final String url = "jdbc:oracle:thin:@192.168.0.12:1521:orcl11";
+		final String id = "test";
+		final String pw = "test";
+		conn = DriverManager.getConnection(url, id, pw);
+		String cid = UUID.randomUUID().toString();
+		String name = "강호동";
+		String sql = " insert into MEMBER values(?, ?)";
+		pstmt = conn.prepareStatement(sql);
+		pstmt.setString(1, cid);
+		pstmt.setString(2, name);
+		int cnt =pstmt.executeUpdate();
+	}
+
+	// 실패
+	public void methodD() throws Exception {
+		Connection conn = null;
+		Statement stmt = null;
+		ResultSet rs = null;
+		final String url = "jdbc:oracle:thin:@192.168.0.12:1521:orcl11";
+		final String id = "test";
+		final String pw = "test";
+		conn = DriverManager.getConnection(url, id, pw);
+		String cid = UUID.randomUUID().toString();
+		String name = "강호동유재석";
+		String sql = " insert into MEMBER values(?, ?)";
+		pstmt = conn.prepareStatement(sql);
+		pstmt.setString(1, cid);
+		pstmt.setString(2, name);
+		int cnt =pstmt.executeUpdate();
+	}
+	
 }

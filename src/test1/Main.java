@@ -1,6 +1,9 @@
 package test1;
 
+import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.Scanner;
+import java.util.UUID;
 
 /*
 	1주차 Coding 과제 :
@@ -24,6 +27,7 @@ import java.util.Scanner;
 public class Main {
 	static Scanner sc = new Scanner(System.in);
 	UserDao userDao = new UserDao();
+	UserController userController = new UserController();
 	public static void main(String[] args) {
 		Main m = new Main();
 		m.start();
@@ -40,12 +44,90 @@ public class Main {
 			int choice = sc.nextInt();
 			sc.nextLine();
 			switch(choice){
-				case 1:  userDao.allRead(); break;
-				case 2:  userDao.read(); break;
-				case 3:  userDao.create(); break;
-				case 4:  userDao.update(); break;
-				case 5:  userDao.delete(); break;
+				case 1:  allRead(); break;
+				case 2:  read(); break;
+				case 3:  create(); break;
+				case 4:  update(); break;
+				case 5:  delete(); break;
+				case 6:  try {
+							userDao.methodA(); // 성공
+							userDao.methodB(); // 실패 ( name 5글자 제한 )
+						} catch (Exception e) {
+							try {
+								UserDao.conn.rollback(); // methodA, methodB 둘 다 실패
+							} catch (SQLException e1) {
+								e1.printStackTrace();
+							}
+						}
+						 break;
+				case 7:  try {
+							userDao.methodC(); // 성공 
+							userDao.methodD(); // 실패 ( name 5글자 제한 )
+						} catch (Exception e) {
+							try {
+								UserDao.conn.rollback(); // methodA 성공, methodB 실패
+							} catch (SQLException e1) {
+								e1.printStackTrace();
+							}
+						}
+						 break;		 
 			}
+		}
+	}
+	public void allRead() {
+		ArrayList<UserDto> list = userController.allRead();
+		System.out.println("                 id                     name");
+		System.out.println("--------------------------------------------");
+		for(UserDto userDto : list) {
+			System.out.print(userDto.getId()+"    ");
+			System.out.println(userDto.getName());
+		}
+	}
+	public void read() {
+		System.out.println("검색할  id를 입력해주세요");
+		String id = sc.nextLine();
+		UserDto userDto = userController.read(id);
+		if(userDto != null) {
+			System.out.print(userDto.getId()+"    ");
+			System.out.println(userDto.getName());
+		}
+	}
+	public void create() {
+		String id = UUID.randomUUID().toString();
+		System.out.println("이름을 입력해주세요(1~5글자)");
+		String name = sc.nextLine();
+		UserDto userDto = new UserDto(id, name);
+		boolean result = userController.create(name);
+		if(result) {
+			System.out.println("추가 성공");
+		}else {
+			System.out.println("추가 실패");
+		}
+	}
+	public void update() {
+		System.out.println("수정할  id를 입력해주세요");
+		String id = sc.nextLine();
+		UserDto userDto = userController.read(id);
+		if(userDto != null) {
+			boolean result = userController.upadate(userDto);
+			if (result) {
+				System.out.println("수정 성공");
+			} else {
+				System.out.println("수정 실패");
+			}
+		}else {
+			System.out.println("수정 실패");
+		}
+	}
+	public void delete() {
+		System.out.println("삭제할 id를 입력하세요");
+		String id = sc.nextLine();
+		UserDto userDto = userController.read(id);
+		if(userDto != null) {
+			boolean result = userController.delete(id);
+			System.out.println("삭제 성공");
+		}else {
+			System.out.println("삭제 실패");
 		}
 	}
 }

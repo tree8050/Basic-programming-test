@@ -1,19 +1,25 @@
 package test1;
 
 public class UserDto {
-	private String user_Id;
-	private String name;
-	
-	public String getUser_Id() {
-		return user_Id;
+	private String id;
+	private String name; 
+	public String getId() {
+		return id;
 	}
-	public void setUser_Id(String user_Id) {
-		this.user_Id = user_Id;
+	public void setId(String id) {
+		this.id = id;
 	}
 	public String getName() {
 		return name;
 	}
 	public void setName(String name) {
+		this.name = name;
+	}
+	UserDto(){
+		
+	}
+	UserDto(String id, String name){
+		this.id = id;
 		this.name = name;
 	}
 }
