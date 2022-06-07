@@ -346,14 +346,9 @@ public class UserDao {
 		String cid = UUID.randomUUID().toString();
 		System.out.println("이름을 입력해주세요(1~5글자)");
 		String name = sc.nextLine();
-		String sql = " insert into MEMBER values(?, ?)";
 		int cnt = 0;
 		try {
-			pstmt = conn.prepareStatement(sql);
-			pstmt.setString(1, cid);
-			pstmt.setString(2, name);
-			cnt = pstmt.executeUpdate();
-			System.out.println("id " + cid);
+			cnt = createA(conn, cid, name);
 		} catch (Exception e) {
 			try {
 				conn.rollback();
@@ -363,20 +358,23 @@ public class UserDao {
 		}
 		return cnt;
 	}
-
-	// 실패
+	public int createA(Connection conn, String id, String name) throws SQLException {
+		String sql = "insert into MEMBER values(?, ?)";
+		pstmt = conn.prepareStatement(sql);
+		pstmt.setString(1, id);
+		pstmt.setString(2, name);
+		int cnt = pstmt.executeUpdate();
+		return cnt;
+	}
+	
 	public int methodB(Connection conn) {
 		System.out.println("수정할  id를 입력해주세요");
 		String id = sc.nextLine();
 		System.out.println("이름을 입력해주세요(1~5글자)");
 		String name = sc.nextLine();
-		String sql = "UPDATE MEMBER SET name = ? where id = ?";
 		int cnt = 0;
 		try {
-			pstmt = conn.prepareStatement(sql);
-			pstmt.setString(1, id);
-			pstmt.setString(2, name);
-			cnt = pstmt.executeUpdate();
+			cnt = updateB(conn, id, name);
 		} catch (Exception e) {
 			try {
 				conn.rollback();
@@ -386,122 +384,47 @@ public class UserDao {
 		}
 		return cnt;
 	}
-
-	public int methodC(Connection conn) throws Exception {
-		String cid = UUID.randomUUID().toString();
-		System.out.println("이름을 입력해주세요(1~5글자)");
-		String name = sc.nextLine();
-		String sql = " insert into MEMBER values(?, ?)";
+	public int updateB(Connection conn, String id, String name) throws SQLException {
+		String sql = "UPDATE MEMBER SET name = ? where id = ?";
 		pstmt = conn.prepareStatement(sql);
-		pstmt.setString(1, cid);
+		pstmt.setString(1, id);
 		pstmt.setString(2, name);
 		int cnt = pstmt.executeUpdate();
-		System.out.println("id " + cid);
 		return cnt;
 	}
-
+	
+	public int methodC(Connection conn) throws Exception {
+		String id = UUID.randomUUID().toString();
+		System.out.println("이름을 입력해주세요(1~5글자)");
+		String name = sc.nextLine();
+		int cnt = createC(conn, id, name);
+		System.out.println("id " + id);
+		return cnt;
+	}
+	public int createC(Connection conn, String id, String name) throws SQLException {
+		String sql = "insert into MEMBER values(?, ?)";
+		pstmt = conn.prepareStatement(sql);
+		pstmt.setString(1, id);
+		pstmt.setString(2, name);
+		int cnt = pstmt.executeUpdate();
+		return cnt;
+	}
+	
 	public int methodD(Connection conn, UserDto userDto) throws Exception {
 		System.out.println("수정할  id를 입력해주세요");
 		String id = sc.nextLine();
 		System.out.println("수정할 이름을 입력해주세요(1~5글자)");
 		String name = sc.nextLine();
-		String sql = "UPDATE MEMBER SET name = ? where id = ?";
-		pstmt = conn.prepareStatement(sql);
-		pstmt.setString(1, name);
-		pstmt.setString(2, id);
-		int cnt = pstmt.executeUpdate();
-		System.out.println("f = " + cnt);
+		int cnt = updateD(conn, id, name);
 		return cnt;
 	}
-//	// 성공
-//	public void methodA() throws Exception{
-//		Connection conn = null;
-//		Statement stmt = null;
-//		ResultSet rs = null;
-//		final String url = "jdbc:oracle:thin:@192.168.0.12:1521:orcl11";
-//		final String id = "test";
-//		final String pw = "test";
-//		conn = DriverManager.getConnection(url, id, pw);
-//		conn.setAutoCommit(false);
-//		String cid = UUID.randomUUID().toString();
-//		String name = "강호동";
-//		String sql = " insert into MEMBER values(?, ?)";
-//		pstmt = conn.prepareStatement(sql);
-//		pstmt.setString(1, cid);
-//		pstmt.setString(2, name);
-//		int cnt =pstmt.executeUpdate();
-//	}
-//
-//	// 실패
-//	public void methodB() throws Exception {
-//		Connection conn = null;
-//		Statement stmt = null;
-//		ResultSet rs = null;
-//		final String url = "jdbc:oracle:thin:@192.168.0.12:1521:orcl11";
-//		final String id = "test";
-//		final String pw = "test";
-//		conn = DriverManager.getConnection(url, id, pw);
-//		conn.setAutoCommit(false);
-//		String cid = UUID.randomUUID().toString();
-//		String name = "강호동유재석";
-//		String sql = " insert into MEMBER values(?, ?)";
-//		pstmt = conn.prepareStatement(sql);
-//		pstmt.setString(1, cid);
-//		pstmt.setString(2, name);
-//		int cnt =pstmt.executeUpdate();
-//	}
-	// 성공
-//	public void methodC() throws Exception{
-//		Connection conn = null;
-//		Statement stmt = null;
-//		ResultSet rs = null;
-//		final String url = "jdbc:oracle:thin:@192.168.0.12:1521:orcl11";
-//		final String id = "test";
-//		final String pw = "test";
-//		conn = DriverManager.getConnection(url, id, pw);
-//		String cid = UUID.randomUUID().toString();
-//		String name = "강호동";
-//		String sql = " insert into MEMBER values(?, ?)";
-//		pstmt = conn.prepareStatement(sql);
-//		pstmt.setString(1, cid);
-//		pstmt.setString(2, name);
-//		int cnt =pstmt.executeUpdate();
-//	}
-//
-//	// 실패
-//	public void methodD() throws Exception {
-//		Connection conn = null;
-//		Statement stmt = null;
-//		ResultSet rs = null;
-//		final String url = "jdbc:oracle:thin:@192.168.0.12:1521:orcl11";
-//		final String id = "test";
-//		final String pw = "test";
-//		conn = DriverManager.getConnection(url, id, pw);
-//		String cid = UUID.randomUUID().toString();
-//		String name = "강호동유재석";
-//		String sql = " insert into MEMBER values(?, ?)";
-//		pstmt = conn.prepareStatement(sql);
-//		pstmt.setString(1, cid);
-//		pstmt.setString(2, name);
-//		int cnt =pstmt.executeUpdate();
-//	}
-//	public void methodE(Connection conn) throws Exception {
-//		String cid = UUID.randomUUID().toString();
-//		String name = "강호동유재석";
-//		String sql = " insert into MEMBER values(?, ?)";
-//		pstmt = conn.prepareStatement(sql);
-//		pstmt.setString(1, cid);
-//		pstmt.setString(2, name);
-//		int cnt =pstmt.executeUpdate();
-//	}
-//	public void methodF(Connection conn) throws Exception {
-//		String cid = UUID.randomUUID().toString();
-//		String name = "강호동유재석";
-//		String sql = " insert into MEMBER values(?, ?)";
-//		pstmt = conn.prepareStatement(sql);
-//		pstmt.setString(1, cid);
-//		pstmt.setString(2, name);
-//		int cnt =pstmt.executeUpdate();
-//	}
+	public int updateD(Connection conn, String id, String name) throws SQLException {
+		String sql = "UPDATE MEMBER SET name = ? where id = ?";
+		pstmt = conn.prepareStatement(sql);
+		pstmt.setString(1, id);
+		pstmt.setString(2, name);
+		int cnt = pstmt.executeUpdate();
+		return cnt;
+	}
 
 }
