@@ -1,14 +1,11 @@
 package test2;
 
-
 import lombok.Data;
 
 @Data
 public class UserDto {
 	private String id;
-	private String name;
-	private String pw;
-	
+	private String name; 
 	public String getId() {
 		return id;
 	}
@@ -21,19 +18,11 @@ public class UserDto {
 	public void setName(String name) {
 		this.name = name;
 	}
-	public String getPw() {
-		return pw;
+	UserDto(){
+		
 	}
-	public void setPw(String pw) {
-		this.pw = pw;
-	}
-	public UserDto(String id, String name, String pw) {
+	UserDto(String id, String name){
 		this.id = id;
 		this.name = name;
-		this.pw = pw;
-	}
-	@Override
-	public String toString() {
-		return "UserDto [id=" + id + ", name=" + name + ", pw=" + pw + "]";
 	}
 }
