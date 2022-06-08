@@ -1,8 +1,6 @@
 package test3;
 
 import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
 import java.util.Scanner;
 import java.util.UUID;
 import java.util.stream.Stream;
@@ -13,8 +11,6 @@ public class Main {
 	String name;
 	String pw;
 	UserDto userDto[] = new UserDto[10];
-	ArrayList<UserDto> list = new ArrayList<>();
-	Stream<UserDto> stream = list.stream();
 	private int index = -1; // index
 	private String searchId; // 조회, 삭제 시 이용할 변수
 
@@ -54,16 +50,15 @@ public class Main {
 
 	public void allRead() {
 		// UserDto타입으로 받는 list 선언
-//		ArrayList<UserDto> list = new ArrayList<UserDto>();
-//		for (int i = 0; i < index + 1; i++) {
-//			// 객체수만큼 리스트에 담고
-//			list.add(new UserDto(userDto[i].getId(), userDto[i].getName(), userDto[i].getPw()));
-//		}
-//		// stream() 메서드를 통해 List를 Stream으로 변환(생성)
-//		Stream<UserDto> stream = list.stream();
-//		// stream의 메서드인 forEach를 이용해 하나씩 꺼내기
+		ArrayList<UserDto> list = new ArrayList<UserDto>();
+		for (int i = 0; i < index + 1; i++) {
+			// 객체수만큼 리스트에 담고
+			list.add(new UserDto(userDto[i].getId(), userDto[i].getName(), userDto[i].getPw()));
+		}
+		// stream() 메서드를 통해 List를 Stream으로 변환(생성)
+		Stream<UserDto> stream = list.stream();
+		// stream의 메서드인 forEach를 이용해 하나씩 꺼내기
 		stream.forEach(userDto -> System.out.println(userDto));
-		System.out.println(list);
 	}
 
 	public void read() {
@@ -84,19 +79,13 @@ public class Main {
 	}
 
 	public void create() {
+		index++;
 		id = UUID.randomUUID().toString();
 		System.out.println("이름을 입력하세요");
 		name = sc.next();
 		System.out.println("비밀번호를 입력하세요");
 		pw = sc.next();
-		
-		// UserDto타입으로 받는 list 선언
-		ArrayList<UserDto> list2 = new ArrayList<>(Arrays.asList(new UserDto(id, name, pw)));
-		// stream() 메서드를 통해 List를 Stream으로 변환(생성)
-		Stream<UserDto> stream2 = list.stream();
-		// stream의 메서드인 concat을 이용해 전역으로 선언한 stream과 이어주기
-		list = (ArrayList<UserDto>) Stream.concat(stream, stream2);
-		
+		userDto[index] = new UserDto(id, name, pw);
 	}
 
 	public void update() {
