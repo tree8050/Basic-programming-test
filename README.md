@@ -44,7 +44,7 @@ test2 프로젝트는 톰캣을 추가하지않았기에 생성되어있지 않�
 
 [test2 Exception 결과]
 
-![image](https://user-images.githubusercontent.com/87375644/172716731-46d3ee10-01d0-494c-9e68-282b89d92431.png)
+![image](https://user-images.githubusercontent.com/87375644/172717458-75fe40cd-3c06-4f10-8ea7-7f1d8781f217.png)
 
 생성은 성공하지만 수정은 실패하는 데이터를 입력하였습니다.
 
