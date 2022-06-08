@@ -40,3 +40,10 @@ test2 프로젝트는 톰캣을 추가하지않았기에 생성되어있지 않�
 ![Tomcat 배포 경로 2](https://user-images.githubusercontent.com/87375644/169853911-0cc98820-7a09-4167-bc5a-9c7efddd7c84.png)
 
 지정한 경로에 클래스파일이 배포된 모습입니다.
+
+
+[test2 패키지 case6, 7 결과]
+![image](https://user-images.githubusercontent.com/87375644/172716731-46d3ee10-01d0-494c-9e68-282b89d92431.png)
+
+![image](https://user-images.githubusercontent.com/87375644/172716700-1e71b5ac-7558-443a-9f52-e77ad4136a99.png)
+
