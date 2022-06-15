@@ -52,31 +52,54 @@ public class Main {
 	} //////////////// end of start
 
 	public void allRead() {
-		List<String> userNames = list.stream()
-				  .map(UserDto::getName)
-				  .collect(toList());
-		List<String> userIds = list.stream()
-				  .map(UserDto::getId)
-				  .collect(toList());
-		if(userNames.size()==0) {
-			System.out.println("회원이 없습니다");
-			return;
-		}
-		System.out.println("유저 name 목록 : " + userNames);
-		System.out.println("유저 id 목록 : " + userIds);
+		
+//		List<String> userNames = list.stream()
+//				  .map(UserDto::getName)
+//				  .collect(toList());
+//		List<String> userIds = list.stream()
+//				  .map(UserDto::getId)
+//				  .collect(toList());
+//		if(userNames.size()==0) {
+//			System.out.println("회원이 없습니다");
+//			return;
+//		}
+//		System.out.println("유저 name 목록 : " + userNames);
+//		System.out.println("유저 id 목록 : " + userIds);
+		
+			
+		// 1_1  ::은 매개변수가 하나일 때 간결하게 표현해주는 방법
+		list.stream().forEach(System.out::println);
+		
+		// 1_2
+		//list.stream().map(list -> { System.out.println("회원목록"); return list; }). forEach(System.out::println);
+		
+		// 2_1
+		//list.stream().forEach(list -> System.out.println(list));
+		
+		// 2_2
+		//list.stream().forEach(list -> System.out.println("id : " + list.getId() + " name : " + list.getName() + " pw : " + list.getPw()));
+		
 	}
 
 	public void read() {
 		System.out.println("검색할  id를 입력해주세요");
 		searchId = sc.next();
+//		try {
+//			String userName = list.stream()
+//					.filter(userDto -> userDto.getId().equals(searchId))
+//					.findAny().get().getName();
+//			System.out.println("검색 결과 name : " + userName);
+//		} catch(Exception e){
+//			System.out.println("없는 회원입니다");
+//		}
+		
+		
 		try {
-			String userName = list.stream()
-					.filter(userDto -> userDto.getId().equals(searchId))
-					.findAny().get().getName();
-			System.out.println("검색 결과 name : " + userName);
+			list.stream().filter(userDto -> userDto.getId().equals(searchId)).forEach(userDto -> System.out.println("검색 결과\n" + list));
 		} catch(Exception e){
 			System.out.println("없는 회원입니다");
 		}
+		
 	}
 
 	public void create() {
@@ -95,13 +118,17 @@ public class Main {
 		name = sc.next();
 		System.out.println("비밀번호를 입력하세요");
 		pw = sc.next();
-		list.stream()
-		.filter(userDto -> userDto.getId().equals(searchId))
-		.findAny().get().setName(name);
-		list.stream()
-		.filter(userDto -> userDto.getId().equals(searchId))
-		.findAny().get().setPw(pw);
-	}
+		
+//		list.stream()
+//		.filter(userDto -> userDto.getId().equals(searchId))
+//		.findAny().get().setName(name);
+//		list.stream()
+//		.filter(userDto -> userDto.getId().equals(searchId))
+//		.findAny().get().setPw(pw);
+		
+		list.stream().filter(userDto -> userDto.getId().equals(searchId)).forEach(userDto -> {userDto.setName(name); userDto.setPw(pw);});
+		
+		}
 
 	public void delete() {
 
