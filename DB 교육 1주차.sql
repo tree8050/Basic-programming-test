@@ -237,7 +237,7 @@ select '사번이' || empno || '인 직원의 이름은' || ename || '이다' fr
 -- 근무기간이 작은 순서데로 조회하여라.
 -- 근무기간 = 현재날짜 - 입사날짜
 -- 근무년수가 33년 이상인 직원의 명단을 출력
-
+ 
 select empno, ename, trunc(months_between(sysdate, hiredate)/12) as "근무기간"
 from emp
 where trunc(months_between(sysdate, hiredate)/12) >=33
