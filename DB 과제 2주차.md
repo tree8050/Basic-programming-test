@@ -98,19 +98,27 @@ CREATE UNIQUE INDEX XPKC3 ON C3
 (c3   ASC);
 
 -- 식별자 --
+
 select *
 from A1, B1, C1 
 where A1.a1 = C1.a1 and B1.b1=C1.B1;
+
 --------------------------------
+
 -- 비식별자 --
+
 select *
 from A2, B2, C2 
 where A2.a2=B2.a2;
+
 --------------------------------
+
 -- 관계X --
+
 select *
 from A3, B3, C3 ;
 
+--------------------------------
 
 
 
