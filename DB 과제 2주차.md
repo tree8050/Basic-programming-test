@@ -1,5 +1,5 @@
 
-1. erwin 생성
+1. erwin
 
 ![image](https://user-images.githubusercontent.com/87375644/175297253-240028fd-f877-44cb-9223-d07f12a060c8.png)
 
@@ -9,7 +9,7 @@
 
 
 
-2. 스키마 생성
+2. 스키마
 
 CREATE TABLE A1
 (
@@ -96,6 +96,9 @@ CREATE TABLE C3
 
 CREATE UNIQUE INDEX XPKC3 ON C3
 (c3   ASC);
+
+
+--------------------------------
 
 -- 식별자 --
 
